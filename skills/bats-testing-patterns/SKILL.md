@@ -1,22 +1,11 @@
 ---
 name: bats-testing-patterns
-description: Expert guidance for writing comprehensive tests for bash code using BATS (Bash Automated Testing System). Use when writing tests for shell scripts, CI/CD pipelines, or requiring test-driven development of shell utilities.
+description: Expert guidance for writing comprehensive tests for bash code using BATS (Bash Automated Testing System). Use when writing tests for shell scripts with BATS.
 ---
 
 # Bats Testing Practices
 
 Comprehensive guidance for writing comprehensive unit tests for shell scripts using Bats (Bash Automated Testing System), including test patterns, fixtures, and best practices for production-grade shell testing.
-
-## When to Use This Skill
-
-- Writing unit tests for shell scripts
-- Implementing test-driven development (TDD) for scripts
-- Setting up automated testing in CI/CD pipelines
-- Testing edge cases and error conditions
-- Validating behavior across different shell environments
-- Building maintainable test suites for scripts
-- Creating fixtures for complex test scenarios
-- Testing multiple shell dialects (bash, sh, dash)
 
 ## BATS Availability
 
@@ -50,7 +39,7 @@ teardown() {
 
 # simple assertions
 @test "Function returns 0 on success" {
-  run my_function
+  run my_function "an_argument"
   assert_success
 }
 
@@ -388,4 +377,3 @@ generate_fixture() {
 - **Bats GitHub**: <https://github.com/bats-core/bats-core>
 - **Bats basic assertions**: <https://github.com/bats-core/bats-assert/blob/master/README.md>
 - **Bats file assertions**: <https://github.com/bats-core/bats-file/blob/master/README.md>
-
