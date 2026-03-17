@@ -253,110 +253,11 @@ teardown() {
 
 ## Mocking and Stubbing Patterns
 
-### Function Mocking
-
-```bash
-#!/usr/bin/env bats
-
-# Create a function with the same name of the external tool to mock its behavior
-my_external_tool() {
-  echo "mocked output"
-  return 0
-}
-
-@test "Function uses mocked tool" {
-  export -f my_external_tool
-  run my_function
-  assert_output --partial "mocked output"
-}
-```
-
-### Command Stubbing
-
-```bash
-#!/usr/bin/env bats
-
-setup() {
-  # Create stub directory
-  STUBS_DIR="$TMPDIR/stubs"
-  mkdir -p "$STUBS_DIR"
-
-  # Add to PATH
-  export PATH="$STUBS_DIR:$PATH"
-}
-
-create_stub() {
-  local cmd="$1"
-  local output="$2"
-  local code="${3:-0}"
-
-  cat > "$STUBS_DIR/$cmd" <<EOF
-#!/bin/bash
-echo "$output"
-exit $code
-EOF
-  chmod +x "$STUBS_DIR/$cmd"
-}
-
-@test "Function works with stubbed curl" {
-  create_stub curl "{ \"status\": \"ok\" }" 0
-  run my_api_function
-  assert_success
-}
-```
+If you need mocking and/or stubbing, check [mock-and-stub-patterns.md](./mock-and-stub-patterns.md).
 
 ## Fixture Management
 
-### Using Fixture Files
-
-```bash
-#!/usr/bin/env bats
-
-# Fixture directory: tests/fixtures/
-
-setup() {
-  FIXTURES_DIR="${BATS_TEST_DIRNAME}/fixtures"
-  WORK_DIR=$(mktemp -d)
-  export WORK_DIR
-}
-
-teardown() {
-  rm -rf "$WORK_DIR"
-}
-
-@test "Process fixture file" {
-  # Copy fixture to work directory
-  cp "$FIXTURES_DIR/input.txt" "$WORK_DIR/input.txt"
-
-  # Run function
-  run my_process_function "$WORK_DIR/input.txt"
-
-  # Compare output
-  assert_files_equal "$WORK_DIR/output.txt" "$FIXTURES_DIR/expected_output.txt"
-}
-```
-
-### Dynamic Fixture Generation
-
-```bash
-#!/usr/bin/env bats
-
-generate_fixture() {
-  local lines="$1"
-  local file="$2"
-
-  for i in $(seq 1 "$lines"); do
-      echo "Line $i content" >> "$file"
-  done
-}
-
-@test "Handle large input file" {
-  generate_fixture 1000 "$TMPDIR/large.txt"
-  run my_function "$TMPDIR/large.txt"
-  assert_success
-  assert [ "$(wc -l < "$TMPDIR/large.txt")" -eq 1000 ]
-}
-```
+If you need to create fixtures, check [fixture.md](./fixture.md).
 
 ## Best Practices
 

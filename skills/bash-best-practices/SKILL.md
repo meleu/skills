@@ -14,8 +14,8 @@ Comprehensive guidance for writing production-ready Bash scripts using defensive
 Enable bash strict mode at the start of every script to catch errors early.
 
 ```bash
-#!/bin/bash
-set -Eeuo pipefail  # Exit on error, unset variables, pipe failures
+#!/usr/bin/env bash
+set -Eeuo pipefail
 ```
 
 ### Error Trapping and Cleanup
@@ -23,10 +23,10 @@ set -Eeuo pipefail  # Exit on error, unset variables, pipe failures
 Implement proper cleanup on script exit on error. Example:
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 set -Eeuo pipefail
 
-trap 'echo "Error on line $LINENO"' ERR
+trap 'echo ERROR: "${BASH_SOURCE[0]}:${BASH_LINENO[0]} in \`${FUNCNAME[1]}\`: $BASH_COMMAND"' ERR
 trap 'echo "Cleaning up..."; rm -rf "$TMPDIR"' EXIT
 
 TMPDIR=$(mktemp -d)
@@ -190,40 +190,7 @@ parse_arguments() {
 
 ### Process Orchestration with Signals
 
-```bash
-set -Eeuo pipefail
-
-# Track background processes
-BG_PIDS=()
-
-cleanup() {
-  log_info "Shutting down..."
-
-  # Terminate all background processes
-  for pid in "${BG_PIDS[@]}"; do
-    if kill -0 "$pid" 2>/dev/null; then
-      kill -TERM "$pid" 2>/dev/null || true
-    fi
-  done
-
-  # Wait for graceful shutdown
-  for pid in "${BG_PIDS[@]}"; do
-    wait "$pid" 2>/dev/null || true
-  done
-}
-
-trap cleanup SIGTERM SIGINT
-
-# Start background tasks
-background_task &
-BG_PIDS+=($!)
-
-another_task &
-BG_PIDS+=($!)
-
-# Wait for all background processes
-wait
-```
+In case you need to run launch parallel processes in background, check [signals-and-process-orchestration.md](./signals-and-process-orchestration.md).
 
 ### Safe Command Substitution
 
